@@ -1,0 +1,14 @@
+add height (hard)
+add 3 site and 1 site option (easy)
+add map control display (hard)
+add timings (hard) (use flood fill)
+add ui (medidum)
+anti overlap (medium)
+flip axis (easy)
+
+Big ideas
+Remake whole project using dif alogrithim
+add features for other proc gen methods
+different types of maps? urban vs outdoors with different algorithm presets
+
+p5 is more lightweight and allowed me explore and have more freedom

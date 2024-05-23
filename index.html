@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Map Generator</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script src="libraries/p5.min.js"></script>
+    <script src="libraries/p5.sound.min.js"></script>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      <label for="numRooms">Number of Rooms: </label>
+      <input type="number" id="numRooms" value="10">
+    </div>
+    <div>
+      <label for="mapHeight">Map Height: </label>
+      <input type="number" id="mapHeight" value="20">
+    </div>
+    <label for="mapWidth">Map Width: </label>
+    <input type="number" id="mapWidth" value="20">
+  </div>
+    <button id="generateButton">Generate Map</button>
+    <script src="sketch.js"></script>
+  </body>
+</html>
