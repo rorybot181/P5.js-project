@@ -2,13 +2,17 @@ let rows, cols;
 let grid;
 let cellSize = 20;
 let rooms = [];
-let sites;
+let sites = 2;
 
 function setup() {
   createCanvas(600, 600);
   numRooms = int(select('#numRooms').value());
-  rows = int(select('#mapHeight').value());
-  cols = int(select('#mapWidth').value());
+  
+  rows = floor(height / cellSize);
+  cols = floor(width / cellSize);
+
+  //rows = int(select('#mapHeight').value());
+  //cols = int(select('#mapWidth').value());
   let generateButton = select('#generateButton');
   generateButton.mousePressed(generateDungeon);
 
@@ -16,13 +20,18 @@ function setup() {
 
 function draw() {
   background(255);
-  createEmptyGrid();
+
   drawDungeon();
 }
 
+
+
 function generateDungeon() {
   grid = createEmptyGrid(rows, cols);
-  
+  rooms = [];
+  clear(); //all to clear the map
+ 
+
   // Create T spawn room
   let tSpawnWidth = floor(random(3, 8));
   let tSpawnHeight = floor(random(3, 8));
@@ -38,20 +47,24 @@ function generateDungeon() {
   createRoom(ctSpawnX, ctSpawnY, ctSpawnWidth, ctSpawnHeight,4);
 
   // Create A bombsite
-  let bombsiteAWidth = floor(random(3, 8));
-  let bombsiteAHeight = floor(random(3, 8));
-  let bombsiteAX = 0;
-  let bombsiteAY = floor((rows - bombsiteAHeight) / 2 + random(-8,8));
-  createRoom(bombsiteAX, bombsiteAY, bombsiteAWidth, bombsiteAHeight,2);
+  if (sites == 2 || sites == 3){
+    let bombsiteAWidth = floor(random(3, 8));
+    let bombsiteAHeight = floor(random(3, 8));
+    let bombsiteAX = 0;
+    let bombsiteAY = floor((rows - bombsiteAHeight) / 2 + random(-8,8));
+    createRoom(bombsiteAX, bombsiteAY, bombsiteAWidth, bombsiteAHeight,2);
+  }
   
   // Create B bombsite
-  let bombsiteBWidth = floor(random(3, 8));
-  let bombsiteBHeight = floor(random(3, 8));
-  let bombsiteBX = cols - bombsiteBWidth;
-  let bombsiteBY = floor((rows - bombsiteBHeight) / 2 + random(-8,8));
-  createRoom(bombsiteBX, bombsiteBY, bombsiteBWidth, bombsiteBHeight,2);
+  if (sites == 2 || sites == 3){
+    let bombsiteBWidth = floor(random(3, 8));
+    let bombsiteBHeight = floor(random(3, 8));
+    let bombsiteBX = cols - bombsiteBWidth;
+    let bombsiteBY = floor((rows - bombsiteBHeight) / 2 + random(-8,8));
+    createRoom(bombsiteBX, bombsiteBY, bombsiteBWidth, bombsiteBHeight,2);
+  }
   
-  if (sites == 3){
+  if (sites == 3 || sites == 1){
     //create c spawn room in centre
     let bombsiteCWidth = floor(random(3, 8));
     let bombsiteCHeight = floor(random(3, 8));
@@ -59,14 +72,20 @@ function generateDungeon() {
     let bombsiteCY = floor((rows - bombsiteCHeight) / 2 + random(-8,8));
     createRoom(bombsiteCX, bombsiteCY, bombsiteCWidth, bombsiteCHeight,2);
   }
-  
-  // Create random rooms
-  for (let i = 0; i < 4; i++) {
-    let roomWidth = floor(random(3, 8));
-    let roomHeight = floor(random(3, 8));
-    let x = floor(random(cols - roomWidth));
-    let y = floor(random(rows - roomHeight));
-    createRoom(x, y, roomWidth, roomHeight,1);
+   //create random rooms, now with check overlap
+  for (let i = 0; i < numRooms; i++) {
+    let roomWidth, roomHeight, x, y;
+    let attempts = 0;
+    do {
+      roomWidth = floor(random(3, 8));
+      roomHeight = floor(random(3, 8));
+      x = floor(random(cols - roomWidth));
+      y = floor(random(rows - roomHeight));
+      attempts++;
+    } while (checkOverlap(x, y, roomWidth, roomHeight) && attempts < 100); // Limit attempts to avoid infinite loop
+    if (attempts < 100) {
+      createRoom(x, y, roomWidth, roomHeight, 1);
+    }
   }
 
   // Connect rooms with corridors
@@ -77,10 +96,30 @@ function generateDungeon() {
   }
 
   drawDungeon()
-  
 }
 
-function createRoom(x, y, w, h,c) {
+//checks to see if rooms overlap
+function checkOverlap(x, y, w, h) {
+  for (let room of rooms) {
+    let roomRight = room.x + room.w;
+    let roomBottom = room.y + room.h;
+    let thisRight = x + w;
+    let thisBottom = y + h;
+
+    let overlapsHorizontally = x < roomRight && thisRight > room.x;
+    let overlapsVertically = y < roomBottom && thisBottom > room.y;
+
+    if (overlapsHorizontally && overlapsVertically) {
+      return true; // there is an overlap
+    }
+  }
+  return false; // No overlap
+}
+
+
+
+
+function createRoom(x, y, w, h,c) {         //x location, y location, width and height, colour
   for (let i = x; i < x + w; i++) {
     for (let j = y; j < y + h; j++) {
       grid[j][i] = c;
@@ -89,7 +128,7 @@ function createRoom(x, y, w, h,c) {
   rooms.push({ x, y, w, h });
 }
 
-//diagonal corridors
+//undiagonal corridors
 function createCorridor(start, end) {
   let currentPosition = createVector(start.x, start.y);
 
@@ -133,7 +172,10 @@ function createCorridor(start, end) {
 function createEmptyGrid(rows, cols) {
   let emptyGrid = [];
   for (let i = 0; i < rows; i++) {
-    emptyGrid[i] = Array(cols).fill(0);
+    emptyGrid[i] = Array(cols); //makes row with number of columns
+    for (let j = 0; j < cols; j++) {
+      emptyGrid[i][j] = 0; //makes grid empty
+    }
   }
   return emptyGrid;
 }
@@ -158,6 +200,11 @@ function drawDungeon() {
       }
       else if(grid[i][j] === 4) { //ct spawn
         fill(48,51,88);
+        noStroke();
+        rect(j * cellSize, i * cellSize, cellSize, cellSize);
+      }
+      else if(grid[i][j] === 5) { //crates
+        fill(177,193,216);
         noStroke();
         rect(j * cellSize, i * cellSize, cellSize, cellSize);
       }

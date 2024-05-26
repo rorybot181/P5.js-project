@@ -12,3 +12,5 @@ add features for other proc gen methods
 different types of maps? urban vs outdoors with different algorithm presets
 
 p5 is more lightweight and allowed me explore and have more freedom
+
+Room design list printout
