@@ -19,6 +19,10 @@ function setup() {
 }
 
 function draw() {
+  rows = int(select('#mapHeight').value());
+  cols = int(select('#mapWidth').value());
+  numRooms = int(select('#numRooms').value());
+  //sites = int(select('#noBombsites').value());
   background(255);
 
   drawDungeon();
@@ -85,6 +89,7 @@ function generateDungeon() {
     } while (checkOverlap(x, y, roomWidth, roomHeight) && attempts < 100); // Limit attempts to avoid infinite loop
     if (attempts < 100) {
       createRoom(x, y, roomWidth, roomHeight, 1);
+      //print error message here?
     }
   }
 
@@ -98,8 +103,8 @@ function generateDungeon() {
   drawDungeon()
 }
 
-//checks to see if rooms overlap
-function checkOverlap(x, y, w, h) {
+//checks to see if rooms overlap, comment out if you want overlap
+function checkOverlap(x, y, w, h) { //x and y, width and height
   for (let room of rooms) {
     let roomRight = room.x + room.w;
     let roomBottom = room.y + room.h;
@@ -110,7 +115,7 @@ function checkOverlap(x, y, w, h) {
     let overlapsVertically = y < roomBottom && thisBottom > room.y;
 
     if (overlapsHorizontally && overlapsVertically) {
-      return true; // there is an overlap
+      return true; // there is an overlap, dont do this
     }
   }
   return false; // No overlap
