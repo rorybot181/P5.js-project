@@ -1,8 +1,17 @@
 html, body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
   margin: 0;
-  padding: 0;
+  background-color: #6d788f;
+  font-family: "Lucida Console",monospace;
 }
 
 canvas {
   display: block;
+}
+
+.mypopup{
+  background-color: antiquewhite;
 }

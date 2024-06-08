@@ -23,8 +23,9 @@
   </head>
 
   <body>
+      <div> red for bombsites, blue for ct spawn, yellow for t spawn
+    </div>
     <div>
-      <div> red for bombsites, blue for ct spawn, yellow for t spawn</div>
       <label for="numRooms">Number of Rooms: </label>
       <input type="number" id="numRooms" value="6">
     </div>
@@ -36,13 +37,20 @@
       <label for="mapWidth">Map Width: </label>
       <input type="number" id="mapWidth" value="30">
     </div>
-    <div>
+    <!-- <div>
       <label for="mapWidth">Number of bombsites 1-3: not functional</label>
       <input type="number" id="noBombsites" value="2">
-    </div>
+    </div> -->
     <div>
       <button id="generateButton">Generate Map</button>
       <script src="sketch.js"></script>
     </div>
+    <div>
+      <button id="generateTheme"> Generate theme</button>
+    </div> 
+    <!-- <div>
+      <button id="floodfillButton">Generate Map control view, not functioning</button>
+      <script src="sketch.js"></script>
+    </div> -->
   </body>
 </html>

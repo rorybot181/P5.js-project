@@ -3,6 +3,7 @@ let grid;
 let cellSize = 20;
 let rooms = [];
 let sites = 2;
+let randomrooms = "mid"
 
 function setup() {
   createCanvas(600, 600);
@@ -11,11 +12,14 @@ function setup() {
   rows = floor(height / cellSize);
   cols = floor(width / cellSize);
 
-  //rows = int(select('#mapHeight').value());
-  //cols = int(select('#mapWidth').value());
+
   let generateButton = select('#generateButton');
   generateButton.mousePressed(generateDungeon);
 
+  let themebutton = select('#generateTheme');
+  themebutton.mousePressed(Mapideas);
+  //let mapcontrolview = select('#floodfillButton');
+  //generateButton.mousePressed(mapcontrolview);
 }
 
 function draw() {
@@ -26,6 +30,17 @@ function draw() {
   background(255);
 
   drawDungeon();
+}
+
+//this doesnt work
+function mapcontrolview(){
+  for (let i = x; i < x + w; i++) {
+    for (let j = y; j < y + h; j++) {
+      if (grid[j][i] === 1  || grid[j][i] == 2 && grid[j-1][i] == 6 || grid[j-1][i] == 3){ 
+        grid[j][i] = 6; //t spawns
+      }
+    }
+  }
 }
 
 
@@ -89,7 +104,6 @@ function generateDungeon() {
     } while (checkOverlap(x, y, roomWidth, roomHeight) && attempts < 100); // Limit attempts to avoid infinite loop
     if (attempts < 100) {
       createRoom(x, y, roomWidth, roomHeight, 1);
-      //print error message here?
     }
   }
 
@@ -138,7 +152,7 @@ function createCorridor(start, end) {
   let currentPosition = createVector(start.x, start.y);
 
   while (currentPosition.x !== end.x || currentPosition.y !== end.y) { 
-    let moveX, moveY;
+    let moveX, moveY; //the straightener
 
     if (end.x > currentPosition.x) {
       moveX = 1;
@@ -156,7 +170,7 @@ function createCorridor(start, end) {
       moveY = 0;
     }
 
-    if (currentPosition.x !== end.x && currentPosition.y !== end.y) {
+    if (currentPosition.x !== end.x && currentPosition.y !== end.y) { 
       if (Math.abs(end.x - currentPosition.x) < Math.abs(end.y - currentPosition.y)) {
         currentPosition.x += moveX;
       } else {
@@ -169,7 +183,7 @@ function createCorridor(start, end) {
     }
 
     if (grid[currentPosition.y][currentPosition.x] === 0) {
-      grid[currentPosition.y][currentPosition.x] = 1;
+      grid[currentPosition.y][currentPosition.x] = 1; //sets colour of corridor to equal rooms (1)
     }
   }
 }
@@ -213,6 +227,30 @@ function drawDungeon() {
         noStroke();
         rect(j * cellSize, i * cellSize, cellSize, cellSize);
       }
+      else if(grid[i][j] === 6) { //mapcontrol t
+        fill(177,193,216);
+        noStroke();
+        rect(j * cellSize, i * cellSize, cellSize, cellSize);
+      }
+      else if(grid[i][j] === 7) { //map control ct
+        fill(177,193,216);
+        noStroke();
+        rect(j * cellSize, i * cellSize, cellSize, cellSize);
+      }
+
     }
   }
+}
+
+function Mapideas() { //for map theming
+  const themes =["middle eastern", "industrial", "Castle", "Modern mansion", "construction site", "archeology site", "theme park" ]
+  const roomideas = ["atrium", "ramp", "long", "short", "main", "squeaky", "containers", "double doors", "ventilation room", "mantinence room", "cafe", "kitchen", "ladder", "apartments", "market", "van", "palace", "catwalk", "heaven", "connector","window room", "underpass","Balcony"," bridge","graveyard","pit","boiler room","archway"]
+  let randomTheme = themes[floor(random(0,themes.length))]; //generates overall map theme
+
+  print(randomTheme)
+  alert(randomTheme);
+  for (i = 0; i < numRooms; i++){ //repeats alerts
+    alert(roomideas[floor(random(0,roomideas.length))]); 
+  }
+  
 }
